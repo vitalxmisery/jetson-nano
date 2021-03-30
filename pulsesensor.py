@@ -2,13 +2,13 @@
 
 import time
 import threading
-from MCP3008 import MCP3008
+import Mcp3008
 
 class Pulsesensor:
     def __init__(self, channel = 0, bus = 0, device = 0):
         self.channel = channel
         self.BPM = 0
-        self.adc = MCP3008(bus, device)
+        self.adc = Mcp3008(bus, device)
 
     def getBPMLoop(self):
         # init variables
@@ -99,4 +99,5 @@ class Pulsesensor:
         self.thread.stopped = True
         self.BPM = 0
         return
-    
+        
+    print("Heart rate is ", pulse)

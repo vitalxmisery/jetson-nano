@@ -16,7 +16,21 @@ class Gps:
     gps.send_command(b"PMTK220,1000")
 
     last_print = time.monotonic()
+
+    fgps = open("/home/allen/Desktop/pyPro/Master /OutputData/GpsData.txt", "a")
+
+    
     while True:
+        gps.update()
+        longi = (gps.longitude)
+        lati = (gps.latitude)        
+        fgps.write(str(lati) +","+str(longi) +"\n")
+        time.sleep(1) 
+
+    fgps.close()
+'''
+    while True:
+        
         gps.update()
 
         current = time.monotonic()
@@ -54,3 +68,5 @@ class Gps:
                 print("Horizontal dilution: {}".format(gps.horizontal_dilution))
             if gps.height_geoid is not None:
                 print("Height geo ID: {} meters".format(gps.height_geoid))
+
+'''

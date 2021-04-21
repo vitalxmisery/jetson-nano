@@ -19,12 +19,14 @@ def temp():
 
     time.sleep(1)
  
+    f = open("/home/allen/Desktop/pyPro/Master /OutputData/TempData.txt", "a")
     while True:
-        print("\nTemperature: %0.1f C" % bme280.temperature)
-        print("Humidity: %0.1f %%" % bme280.relative_humidity)
-        print("Altitude = %0.2f meters" % bme280.altitude)
-        print("Pressure: %0.1f hPa" % bme280.pressure)
-        time.sleep(2)
+        f.write("\nTemperature: %0.1f C" % bme280.temperature + ","
+            "Humidity: %0.1f %%" % bme280.relative_humidity + ","
+            "Altitude = %0.2f meters" % bme280.altitude + ","
+            "Pressure: %0.1f hPa" % bme280.pressure)
+        time.sleep(1)
+    f.close()
 
 def cam():
     import cv2
@@ -105,6 +107,21 @@ def gps():
     gps.send_command(b"PMTK220,1000")
 
     last_print = time.monotonic()
+
+    
+    fgps = open("/home/allen/Desktop/pyPro/Master /OutputData/GpsData.txt", "a")
+
+    
+    while True:
+        gps.update()
+        longi = (gps.longitude)
+        lati = (gps.latitude)        
+        fgps.write(str(lati) +","+str(longi) +"\n")
+        time.sleep(1) 
+
+    fgps.close()
+
+''' 
     while True:
         gps.update()
 
@@ -143,42 +160,33 @@ def gps():
                 print("Horizontal dilution: {}".format(gps.horizontal_dilution))
             if gps.height_geoid is not None:
                 print("Height geo ID: {} meters".format(gps.height_geoid))
-
+'''
+def hb():
+        import serial
+        with serial.Serial('/dev/ttyUSB0', 9600, timeout=10) as ser:  
+            while True:
+                print(ser.readline())
 
 t1 = threading.Thread(target= temp, args=())
 t2 = threading.Thread(target= cam, args=())
 t3 = threading.Thread(target= gps, args=())
 t4 = threading.Thread(target = audio, args=())
+t5 = threading.Thread(target= hb, args=())
 
 t1.start()
 
 
 t2.start()
 t3.start()
-t4.start()
+#t4.start()
+t5.start()
 
-'''
-for t1 in t1:
-    save_path = '/home/allen/Desktop/pyPro/Master /Output/Temp'
-    file_name = "test.txt"
 
-    completeName = os.path.join(save_path, file_name)
-    print(completeName)
-
-    file1 = open(completeName, "w")
-    file1.write("file information")
-    file1.close()
-
-while True:
-    choice = input("Start: temp, cam, gps, audio")
-    if choice == 'temp':
-        t1.start()
-'''
 t1.join()
 t2.join()
 t3.join()
-t4.join()
-
+#t4.join()
+t5.join()
 
 
 
